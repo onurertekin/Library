@@ -1,0 +1,49 @@
+﻿<div class="modal fade" id="activatedRoleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Activated Role</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-message">Bu rolü aktif hale getirmek istediğinize emin misiniz?</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hayır</button>
+                <button type="button" class="btn btn-danger" onclick="activatedRole();">Evet Eminim.</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $activatedRoleModal = $("#activatedRoleModal");
+    var selectedRoleId;
+
+    $activatedRoleModal.on('shown.bs.modal', function (event) {
+        selectedRoleId = $(event.relatedTarget).data('id'); //Tıklanan satırın id'sini oku
+    });
+
+    function activatedRole() {
+        showModalLoading("activatedRoleModal");
+        $.ajax({
+            url: portalApiEndpoint + '/iam/roles/' + selectedRoleId + '/activate',
+            type: 'PUT',
+            complete: function () {
+                hideModalLoading("activatedRoleModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function () {
+                $('#activatedRoleModal').modal('hide');
+                notify("", "Rol başarıyla aktif hale getirildi.", "success");
+                getRoles();
+            },
+            error: function (err, status, xhr) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+</script>

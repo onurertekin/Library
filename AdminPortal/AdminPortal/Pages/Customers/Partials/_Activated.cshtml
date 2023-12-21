@@ -1,0 +1,49 @@
+﻿<div class="modal fade" id="activatedCustomerModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Activated Customer</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-message">Bu müşteriyi aktif etmek istediğinize emin misiniz?</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hayır</button>
+                <button type="button" class="btn btn-danger" onclick="activatedCustomer();">Evet Eminim.</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $activatedCustomerModal = $("#activatedCustomerModal");
+    var selectedCustomerId;
+
+    $activatedCustomerModal.on('shown.bs.modal', function (event) {
+        selectedCustomerId = $(event.relatedTarget).data('id'); //Tıklanan satırın id'sini oku
+    });
+
+    function activatedCustomer() {
+        showModalLoading("activatedCustomerModal");
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/customers/' + selectedCustomerId + '/activate',
+            type: 'PUT',
+            complete: function () {
+                hideModalLoading("activatedCustomerModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function () {
+                $('#activatedCustomerModal').modal('hide');
+                notify("", "Müşteri başarıyla aktif edildi.", "success");
+                getCustomers();
+            },
+            error: function (err, status, xhr) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+</script>

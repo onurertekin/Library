@@ -1,0 +1,49 @@
+﻿<div class="modal fade" id="deactivatedRoleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Deactivated Role</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-message">Bu rolü pasif hale getirmek istediğinize emin misiniz?</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hayır</button>
+                <button type="button" class="btn btn-danger" onclick="deactivatedRole();">Evet Eminim.</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $deactivatedRoleModal = $("#deactivatedRoleModal");
+    var selectedRoleId;
+
+    $deactivatedRoleModal.on('shown.bs.modal', function (event) {
+        selectedRoleId = $(event.relatedTarget).data('id'); //Tıklanan satırın id'sini oku
+    });
+
+    function deactivatedRole() {
+        showModalLoading("deactivatedRoleModal");
+        $.ajax({
+            url: portalApiEndpoint + '/iam/roles/' + selectedRoleId + '/deactivate',
+            type: 'PUT',
+            complete: function () {
+                hideModalLoading("deactivatedRoleModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function () {
+                $('#deactivatedRoleModal').modal('hide');
+                notify("", "Rol başarıyla pasif hale getirildi.", "success");
+                getRoles();
+            },
+            error: function (err, status, xhr) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+</script>

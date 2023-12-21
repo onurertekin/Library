@@ -1,0 +1,83 @@
+﻿<div class="modal fade" id="editAuthorModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Yazar Düzenle</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="authorName">Yazar Adı</label>
+                    <input name="authorName" type="text" class="form-control">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="editAuthor();">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $editAuthorModal = $("#editAuthorModal");
+    var selectedAuthorId;
+
+    $editAuthorModal.on('show.bs.modal', function (event) {
+        //Modal her açıldığında tetiklenir
+        showModalLoading("editAuthorModal");
+        $editAuthorModal.find("input[name='authorName']").val("");
+        $editAuthorModal.find("input[name='authorName']").trigger('focus');
+
+        selectedAuthorId = $(event.relatedTarget).data('id'); //Tıklanan satırın id'sini oku
+
+        getAuthor();
+    });
+
+    function getAuthor() {
+        $.ajax({
+            url:  portalApiEndpoint + '/library-api/authors/' + selectedAuthorId,
+            type: 'GET',
+            complete: function () {
+                hideModalLoading("editAuthorModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                $editAuthorModal.find("input[name='authorName']").val(response.name);
+            },
+            error: function (xhr, status, error) {
+                alert("Hata Oluştu!");
+            }
+        });
+    }
+
+    function editAuthor() {
+        showModalLoading("editAuthorModal");
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/authors/' + selectedAuthorId,
+            type: 'PUT',
+            complete: function () {
+                hideModalLoading("editAuthorModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                name: $editAuthorModal.find("input[name='authorName']").val()
+            }),
+            success: function (result) {
+                $('#editAuthorModal').modal('hide');// modal'ı kapat
+                notify("", "Yazar başarıyla güncellendi.", "success");
+                getAuthors();
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+
+</script>

@@ -1,0 +1,89 @@
+﻿<div class="modal fade" id="newRezervationModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Yeni Rezervasyon</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="rezervationStartDate">Rezervasyon Başlangıç Tarihi</label>
+                    <input name="rezervationStartDate" type="date" class="form-control">
+
+                    <label for="rezervationEndDate">Rezervasyon Bitiş Tarihi</label>
+                    <input name="rezervationEndDate" type="date" class="form-control">
+
+                    <div class="form-group">
+                        <label for="customers">Müşteriler</label>
+                        <select name="customers" class="form-control">
+                            @*<option value="1">Onur</option>*@
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="books">Kitaplar</label>
+                        <select name="books" class="form-control">
+                            @*<option value="1">Nutuk</option>*@
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="createNewRezervation();">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $newRezervationModal = $("#newRezervationModal");
+    fillCustomers('#newRezervationModal select[name=customers]');
+    fillBooks('#newRezervationModal select[name=books]');
+
+    $('#newRezervationModal').on('shown.bs.modal', function () {
+        //Modal her açıldığında tetiklenir
+        $newRezervationModal.find("input[name='rezervationStartDate']").val("");
+        $newRezervationModal.find("input[name='rezervationEndDate']").val("");
+        $newRezervationModal.find("select[name='customers']").val("");
+        $newRezervationModal.find("select[name='books']").val("");
+        $newRezervationModal.find("input[name='rezervationStartDate']").trigger('focus');
+
+
+    });
+
+    function createNewRezervation() {
+        showModalLoading("newRezervationModal");
+        //create api'si çağırılacak
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/rezervations',
+            type: 'POST',
+            complete: function () {
+                hideModalLoading("newRezervationModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                rezervationStartDate: $newRezervationModal.find("input[name='rezervationStartDate']").val(),
+                rezervationEndDate: $newRezervationModal.find("input[name='rezervationEndDate']").val(),
+                customerId: $newRezervationModal.find("select[name='customers']").val(),
+                bookId: $newRezervationModal.find("select[name='books']").val()
+            }),
+            success: function () {
+                $('#newRezervationModal').modal('hide');// modal'ı kapat
+                notify("", "Rezervasyon başarıyla oluşturuldu.", "success");
+                getRezervations();
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+
+</script>

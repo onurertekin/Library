@@ -1,0 +1,60 @@
+﻿<div class="modal fade" id="newAuthorModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Yeni Yazar</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="authorName">Yazar Adı</label>
+                    <input name="authorName" type="text" class="form-control">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="createNewAuthor();">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $newAuthorModal = $("#newAuthorModal");
+
+    $('#newAuthorModal').on('shown.bs.modal', function () {
+        //Modal her açıldığında tetiklenir
+        $newAuthorModal.find("input[name='authorName']").val("");
+        $newAuthorModal.find("input[name='authorName']").trigger('focus');
+    });
+
+    function createNewAuthor() {
+        showModalLoading("newAuthorModal");
+        //create api'si çağırılacak
+        $.ajax({
+            url: portalApiEndpoint +  '/library-api/authors',
+            type: 'POST',
+            complete: function () {
+                hideModalLoading("newAuthorModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                name: $newAuthorModal.find("input[name='authorName']").val()
+            }),
+            success: function () {
+                $('#newAuthorModal').modal('hide');// modal'ı kapat
+                notify("", "Yazar başarıyla oluşturuldu.", "success");
+                getAuthors();
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+</script>

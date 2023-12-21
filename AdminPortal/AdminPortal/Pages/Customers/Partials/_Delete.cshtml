@@ -1,0 +1,53 @@
+﻿<div class="modal fade" id="deleteCustomerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Müşteri Sil</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-message">Bu müşteriyi silmek istediğinize emin misiniz?</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hayır</button>
+                <button type="button" class="btn btn-danger" onclick="deleteCustomer();">Evet Eminim.</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $deleteCustomerModal = $("#deleteCustomerModal");
+    var selectedCustomerId;
+
+    $deleteCustomerModal.on('shown.bs.modal', function (event) {
+        //Modal her açıldığında tetiklenir
+        selectedCustomerId = $(event.relatedTarget).data('id'); //Tıklanan satırın id'sini oku
+    });
+
+    function deleteCustomer() {
+        showModalLoading("deleteCustomerModal");
+        $.ajax({
+            url:  portalApiEndpoint + '/library-api/customers/' + selectedCustomerId,
+            type: 'DELETE',
+            complete: function () {
+                hideModalLoading("deleteCustomerModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                // Silme işlemi başarılı olduğunda burada gerekli işlemleri yapabilirsiniz.
+                $('#deleteCustomerModal').modal('hide');// modal'ı kapat
+                notify("", "Müşteri başarıyla silindi.", "success");
+                getCustomers();
+            },
+            error: function (xhr, status, error) {
+                // Silme işlemi sırasında hata oluştuğunda burada gerekli işlemleri yapabilirsiniz.
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+</script>

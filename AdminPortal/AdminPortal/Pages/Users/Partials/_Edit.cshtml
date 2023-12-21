@@ -2,37 +2,59 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Kullanıcı Düzenle</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
 
-                <div class="form-group">
-                    <label for="firstName">Adı</label>
-                    <input name="firstName" type="text" class="form-control">
+                <div class="row g-3 mb-1">
+                    <div class="col-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="firstName" placeholder="First Name">
+                            <label data-for="firstName">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="lastName" placeholder="Last Name">
+                            <label data-for="lastName">Last Name</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="lastName">Soyadı</label>
-                    <input name="lastName" type="text" class="form-control">
+
+                <div class="row g-3 mb-1">
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="userName" placeholder="User Name">
+                            <label data-for="userName">Kullanıcı Adı</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="userName">Kullanıcı Adı</label>
-                    <input name="userName" type="text" class="form-control">
+
+                <div class="row g-3 mb-1">
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" name="email" placeholder="Email">
+                            <label data-for="email">Email</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input name="email" type="text" class="form-control">
+
+                <div class="row g-3 mb-1">
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" name="password" placeholder="Password">
+                            <label data-for="password">Password</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input name="password" type="password" class="form-control">
-                </div>
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="editUser();">Kaydet</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="editUser();">Save</button>
             </div>
         </div>
     </div>
@@ -69,12 +91,11 @@
                 $editUserModal.find("input[name='password']").val(response.password);
             },
             error: function (xhr, status, err) {
-                alert("Hata Oluştu");
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
             }
         });
-
     }
-
 
     function editUser() {
         showModalLoading("editUserModal");
@@ -94,7 +115,7 @@
             }),
             success: function (result) {
                 $('#editUserModal').modal('hide');
-                notify("", "Kullanıcı başarıyla güncellendi", "success");
+                notify('Success', localize("notify.UserUpdated"), 'success', 10000);
                 getUsers();
             },
             error: function (xhr, status, err) {

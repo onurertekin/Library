@@ -10,5 +10,7 @@ namespace Contract.Request.IAM.Role
     {
         public string name { get; set; }
         public List<string> claims { get; set; }
+        public int status { get; set; }
+        public DateTime? UpdatedOn { get; set; }
     }
 }

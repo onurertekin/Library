@@ -1,0 +1,112 @@
+﻿<div class="modal fade" id="editBookAuthorsModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Kitap Yazarlarını Düzenle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group" id="authorList">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="editBookAuthors();">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<template id="bookAuthorsCheckboxTemplate">
+    <div class="form-check">
+        <input id="#LabelFor#" type="checkbox" value="#Id#" class="form-check-input">
+        <label class="form-check-label" for="#LabelFor#">#Name#</label>
+    </div>
+</template>
+
+<script>
+    $editBookAuthorsModal = $("#editBookAuthorsModal");
+
+    var selectedBookId;
+
+    $('#editBookAuthorsModal').on('show.bs.modal', function (event) {
+        //Modal her açıldığında tetiklenir
+        showModalLoading("editBookAuthorsModal");
+        selectedBookId = $(event.relatedTarget).data('id');
+        $("#editBookAuthorsModal #authorList").empty();
+        _getAuthors();
+
+    });
+
+    function _getAuthors() {
+        $.get(portalApiEndpoint + '/library-api/authors', function (response) {
+
+            $(response.authors).each(function (i, author) {
+
+                var template = $("#bookAuthorsCheckboxTemplate").html();
+                template = template.replace("#Id#", author.id);
+                template = template.replace("#LabelFor#", author.id);
+                template = template.replace("#LabelFor#", author.id);
+                template = template.replace("#Name#", author.name);
+                $("#editBookAuthorsModal #authorList").append(template);
+            });
+
+            getBookAuthor();
+        });
+    }
+
+    function getBookAuthor() {
+
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/books/' + selectedBookId + '/authors',
+            type: 'GET',
+            complete: function () {
+                hideModalLoading("editBookAuthorsModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                $(response.bookAuthors).each(function (i, author) {
+                    //ilgili rolün checkbox'ını işaretliyoruz.
+                    $("#editBookAuthorsModal #authorList input[value='" + author.id + "']").prop("checked", true);
+                });
+            },
+            error: function (err, xhr, status) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+
+    function editBookAuthors() {
+
+        var _selectedClaims = [];
+        showModalLoading("editBookAuthorsModal");
+        $("#editBookAuthorsModal").find("input:checked").each(function (i, authorCheckbox) {
+            _selectedClaims.push($(authorCheckbox).val());
+        });
+
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/books/' + selectedBookId + '/authors',
+            type: 'PUT',
+            complete: function () {
+                hideModalLoading("editBookAuthorsModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                "authors": _selectedClaims
+            }),
+            success: function () {
+                $('#editBookAuthorsModal').modal('hide');
+                notify("", "Yazarlar başarıyla güncellendi.", "success");
+            },
+            error: function (err, status, xhr) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+</script>

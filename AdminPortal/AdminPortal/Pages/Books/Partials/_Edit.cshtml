@@ -1,0 +1,109 @@
+﻿<div class="modal fade" id="editBookModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Kitap Düzenle</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="bookName">Kitap Adı</label>
+                    <input name="bookName" type="text" class="form-control">
+
+                    <label for="pageNumber">Sayfa Sayısı</label>
+                    <input name="pageNumber" type="text" class="form-control">
+
+                    <label for="isbn">Isbn</label>
+                    <input name="isbn" type="text" class="form-control">
+
+                    <div class="form-group">
+                        <label for="status">Durum</label>
+                        <select name="status" class="form-control">
+                            <option value="1">Müşteride</option>
+                            <option value="2">Kütüphanede</option>
+                        </select>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="editBook();">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $editBookModal = $("#editBookModal");
+    var selectedBookId;
+
+    $editBookModal.on('show.bs.modal', function (event) {
+        //Modal her açıldığında tetiklenir
+        showModalLoading("editBookModal");
+        $editBookModal.find("input[name='bookName']").val("");
+        $editBookModal.find("input[name='pageNumber']").val("");
+        $editBookModal.find("input[name='isbn']").val("");
+        $editBookModal.find("input[name='bookName']").trigger('focus');
+
+        selectedBookId = $(event.relatedTarget).data('id'); //Tıklanan satırın id'sini oku
+
+        getBook();
+    });
+
+    function getBook() {
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/books/' + selectedBookId,
+            type: 'GET',
+            complete: function () {
+                hideModalLoading("editBookModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                console.log(response);
+                $editBookModal.find("input[name='bookName']").val(response.name);
+                $editBookModal.find("input[name='pageNumber']").val(response.pageNumber);
+                $editBookModal.find("input[name='isbn']").val(response.isbn);
+                $editBookModal.find("select[name='status']").val(response.status);
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+
+    function editBook() {
+        showModalLoading("editBookModal");
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/books/' + selectedBookId,
+            type: 'PUT',
+            complete: function () {
+                hideModalLoading("editBookModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                name: $editBookModal.find("input[name='bookName']").val(),
+                pageNumber: $editBookModal.find("input[name='pageNumber']").val(),
+                isbn: $editBookModal.find("input[name='isbn']").val(),
+                status: $editBookModal.find("select[name='status']").val()
+            }),
+            success: function (result) {
+                debugger;
+                $('#editBookModal').modal('hide');// modal'ı kapat
+                notify("", "Kitap başarıyla güncellendi.", "success");
+                getBooks();
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+
+</script>

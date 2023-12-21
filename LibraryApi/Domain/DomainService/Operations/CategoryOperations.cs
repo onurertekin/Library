@@ -1,7 +1,9 @@
 ﻿using Contract.Request.Categories;
 using DatabaseModel;
 using DatabaseModel.Entities;
+using DatabaseModel.Enumerations;
 using DomainService.Exceptions;
+using DomainService.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +21,14 @@ namespace DomainService.Operations
             this.mainDbContext = mainDbContext;
         }
 
-        public List<Category> Search(string? name)
+        public IList<Category> Search(string? name, string sortBy, string sortDirection, int pageSize, int pageNumber, out int totalCount)
         {
             var query = mainDbContext.Categories.AsQueryable();
 
             if (!string.IsNullOrEmpty(name)) //adam gönderdiyse.
                 query = query.Where(x => x.Name == name);
 
-            return query.ToList();
+            return query.GetPagedAndSorted(pageNumber, pageSize, sortDirection, sortBy, out totalCount);
         }
         public Category GetSingle(int id)
         {
@@ -48,6 +50,8 @@ namespace DomainService.Operations
 
             Category category = new Category();
             category.Name = name;
+            category.CreatedOn = DateTime.Now;
+            category.Status = CategoryStatus.Active;
             mainDbContext.Categories.Add(category);
 
             mainDbContext.SaveChanges();
@@ -64,9 +68,10 @@ namespace DomainService.Operations
 
             var category = mainDbContext.Categories.Where(x => x.Id == id).SingleOrDefault();
             if (category == null)
-                throw new BusinessException(404, "Kategori Bulunamadı.");
+                throw new BusinessException(404, "Kategori bulunamadı.");
 
             category.Name = name;
+            category.UpdatedOn = DateTime.Now;
 
             mainDbContext.SaveChanges();
         }
@@ -74,9 +79,28 @@ namespace DomainService.Operations
         {
             var category = mainDbContext.Categories.Where(x => x.Id == id).SingleOrDefault();
             if (category == null)
-                throw new BusinessException(404, "Kategori Bulunamadı.");
+                throw new BusinessException(404, "Kategori bulunamadı.");
 
             mainDbContext.Categories.Remove(category);
+            mainDbContext.SaveChanges();
+        }
+        public void Activate(int id)
+        {
+            var category = mainDbContext.Categories.Where(x => x.Id == id).SingleOrDefault();
+            if (category == null)
+                throw new BusinessException(404, "Kategori bulunamadı.");
+
+            category.Status = CategoryStatus.Active;
+            mainDbContext.SaveChanges();
+        }
+
+        public void Deactivate(int id)
+        {
+            var category = mainDbContext.Categories.Where(x => x.Id == id).SingleOrDefault();
+            if (category == null)
+                throw new BusinessException(404, "Kategori bulunamadı.");
+
+            category.Status = CategoryStatus.Passive;
             mainDbContext.SaveChanges();
         }
     }

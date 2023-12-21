@@ -1,0 +1,88 @@
+﻿.scroll {
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+    .scroll::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .scroll::-webkit-scrollbar-thumb {
+        background: #cccccc;
+    }
+
+    .scroll::-webkit-scrollbar-track {
+        background: #e8e8e8;
+    }
+
+.modal-body {
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+    .modal-body::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+        background: #cccccc;
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+        background: #e8e8e8;
+    }
+
+.page-wrapper {
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+    .page-wrapper::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .page-wrapper::-webkit-scrollbar-thumb {
+        background: #cccccc;
+    }
+
+    .page-wrapper::-webkit-scrollbar-track {
+        background: #e8e8e8;
+    }
+
+
+@media only screen and (max-width: 768px) {
+    .fixed-table-body {
+        overflow: auto;
+        overflow-x: hidden;
+    }
+
+        .fixed-table-body::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .fixed-table-body::-webkit-scrollbar-thumb {
+            background: #cccccc;
+        }
+
+        .fixed-table-body::-webkit-scrollbar-track {
+            background: #e8e8e8;
+        }
+}
+
+
+body#tinymce {
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+    body#tinymce::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    body#tinymce::-webkit-scrollbar-thumb {
+        background: #cccccc;
+    }
+
+    body#tinymce::-webkit-scrollbar-track {
+        background: #e8e8e8;
+    }

@@ -1,9 +1,9 @@
-﻿<div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+﻿<div class="modal fade" id="deleteUserModal">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Delete User</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -11,7 +11,7 @@
                 <div class="confirmation-message">Bu kullanıcıyı silmek istediğinize emin misiniz?</div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hayır</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hayır</button>
                 <button type="button" class="btn btn-danger" onclick="deleteUser();">Evet Eminim.</button>
             </div>
         </div>
@@ -37,7 +37,7 @@
             contentType: 'application/json; charset=utf-8',
             success: function () {
                 $('#deleteUserModal').modal('hide');
-                notify("", "Kullanıcı başarıyla silindi.", "success");
+                notify('Success', localize("notify.UserDeleted"), 'success', 10000);
                 getUsers();
             },
             error: function (err, status, xhr) {

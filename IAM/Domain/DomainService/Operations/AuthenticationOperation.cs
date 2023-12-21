@@ -49,7 +49,8 @@ namespace DomainService.Operations
 
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var expiry = DateTime.Now.AddHours(1);
+            //var expiry = DateTime.Now.AddHours(1);
+            var expiry = DateTime.Now.AddMonths(3);
 
             var jwtSecurityToken = new JwtSecurityToken("OnurErtekin", "AdminPortalUsers", claims, expires: expiry, signingCredentials: signIn);
 

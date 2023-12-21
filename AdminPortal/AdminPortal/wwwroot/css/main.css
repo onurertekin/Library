@@ -29,25 +29,18 @@ body, html {
     margin: 20px;
 }
 
-.modalLoading {
-    top: 62px;
-    position: absolute;
-    width: 100% !important;
-    height: 180px !important;
-    border-color: #c70150;
-    border-right-color: transparent;
-    background-color: white;
-    border-top: solid 1px #c9c9c9;
-}
-
-.spinner-border {
-    width: 50px !important;
-    height: 50px !important;
-    position: absolute !important;
-    top: calc(50% - 25px) !important;
-    left: calc(50% - 25px) !important;
-}
-
 .hide {
-    display: none;
+    display: none !important;
+}
+
+.pl-10 {
+    padding-left: 10px !important;
+}
+
+.pr-10 {
+    padding-right: 10px !important;
+}
+
+.fw500 {
+    font-weight: 500 !important;
 }

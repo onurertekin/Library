@@ -1,9 +1,7 @@
-﻿using Azure.Core;
-using Contract.Request.Users;
+﻿using Contract.Request.Users;
 using Contract.Response.Users;
 using DomainService.Operations;
 using Microsoft.AspNetCore.Mvc;
-using Nova.Core.Attributes;
 
 namespace Host.Controllers
 {
@@ -20,7 +18,7 @@ namespace Host.Controllers
         [HttpGet]
         public ActionResult<SearchUsersResponse> Search([FromQuery] SearchUsersRequest request)
         {
-            var users = userOperation.Search(request.userName, request.firstName, request.lastName, request.email);
+            var users = userOperation.Search(request.userName, request.firstName, request.lastName, request.email, request.status, request.sortBy, request.sortDirection, request.pageSize, request.pageNumber, out int totalCount);
 
             SearchUsersResponse response = new SearchUsersResponse();
 
@@ -33,9 +31,15 @@ namespace Host.Controllers
                     firstName = user.FirstName,
                     lastName = user.LastName,
                     email = user.Email,
-                    password = user.Password
+                    password = user.Password,
+                    CreatedOn = user.CreatedOn,  
+                    UpdatedOn = user.UpdatedOn,
+                    status = (int)user.Status,
+                    isDeleted = user.IsDeleted
                 });
             }
+
+            response.totalCount = totalCount;
 
             return new JsonResult(response);
         }
@@ -52,6 +56,10 @@ namespace Host.Controllers
             response.lastName = user.LastName;
             response.email = user.Email;
             response.password = user.Password;
+            response.CreatedOn = user.CreatedOn;
+            response.UpdatedOn = user.UpdatedOn;
+            response.status = (int)user.Status;
+            response.isDeleted = user.IsDeleted;
 
             return new JsonResult(response);
         }
@@ -72,6 +80,18 @@ namespace Host.Controllers
         public void Delete(int id)
         {
             userOperation.Delete(id);
+        }
+
+        [HttpPut("{id}/activate")]
+        public void Activate(int id)
+        {
+            userOperation.Activate(id);
+        }
+
+        [HttpPut("{id}/deactivate")]
+        public void Deactivate(int id)
+        {
+            userOperation.Deactivate(id);
         }
     }
 }

@@ -1,0 +1,49 @@
+﻿<div class="modal fade" id="deactivatedBookModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Deactivated Author</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-message">Bu kitabı pasif hale getirmek istediğinize emin misiniz?</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hayır</button>
+                <button type="button" class="btn btn-danger" onclick="deactivatedBook();">Evet Eminim.</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $deactivatedBookModal = $("#deactivatedBookModal");
+    var selectedBookId;
+
+    $deactivatedBookModal.on('shown.bs.modal', function (event) {
+        selectedBookId = $(event.relatedTarget).data('id'); //Tıklanan satırın id'sini oku
+    });
+
+    function deactivatedBook() {
+        showModalLoading("deactivatedBookModal");
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/books/' + selectedBookId + '/deactivate',
+            type: 'PUT',
+            complete: function () {
+                hideModalLoading("deactivatedBookModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function () {
+                $('#deactivatedBookModal').modal('hide');
+                notify("", "Kitap başarıyla pasif hale getirildi.", "success");
+                getBooks();
+            },
+            error: function (err, status, xhr) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+</script>

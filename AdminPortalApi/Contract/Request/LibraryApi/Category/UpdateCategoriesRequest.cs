@@ -9,5 +9,7 @@ namespace Contract.Request.GeekYaparApi.Categories
     public class UpdateCategoriesRequest
     {
         public string name { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public int status { get; set; }
     }
 }

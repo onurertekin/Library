@@ -5,61 +5,52 @@
 
 <div class="pageTitle">Kategoriler <button type="button" class="btn btn-primary new" data-toggle="modal" data-target="#newCategoryModal">Yeni Kategori Ekle</button></div>
 
-<div class="datatable">
-    <table id="categories" cellpadding="0" cellspacing="0" class="datatable">
-        <thead>
-            <tr>
-                <th>Adı</th>
-                <th style="width:75px;"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @*<tr>
-                <td>BMW</td>
-                <td>İ3</td>
-                <td>2000</td>
-                <td>34ASD123</td>
-                <td style="width:165px;">
-                    <button type="button" class="btn btn-primary">Düzenle</button>
-                    <button type="button" class="btn btn-primary">Sil</button>
-                </td>
-            </tr>
-            <tr>
-                <td>BMW</td>
-                <td>İ3</td>
-                <td>2000</td>
-                <td>34ASD123</td>
-                <td style="width:165px;">
-                    <button type="button" class="btn btn-primary">Düzenle</button>
-                    <button type="button" class="btn btn-primary">Sil</button>
-                </td>
-            </tr>
-            <tr>
-                <td>BMW</td>
-                <td>İ3</td>
-                <td>2000</td>
-                <td>34ASD123</td>
-                <td style="width:165px;">
-                    <button type="button" class="btn btn-primary">Düzenle</button>
-                    <button type="button" class="btn btn-primary">Sil</button>
-                </td>
-            </tr>*@
-        </tbody>
-    </table>
-</div>
+<table id="categories"
+       data-mobile-responsive="true"
+       data-toggle="table"
+       data-show-columns="false"
+       data-toolbar="#toolbar"
+       data-search="false"
+       data-show-refresh="false"
+       data-show-toggle="true"
+       data-show-fullscreen="false"
+       data-show-pagination-switch="false"
+       data-show-columns-toggle-all="false"
+       data-show-export="false"
+       data-click-to-select="true"
+       data-single-select="true"
+       data-page-size="2"
+       data-pagination="true"
+       data-pagination-loop="false"
+       data-pagination-h-align="left"
+       data-pagination-detail-h-align="right"
+       data-id-field="id"
+       data-page-list="[10, 25, 50, 100, all]"
+       data-show-footer="false"
+       data-side-pagination="server"
+       data-server-sort="true"
+       data-sort-name="createdOn"
+       data-sort-order="desc"
+       data-query-params="queryParams"
+       data-response-handler="responseHandler"></table>
 
-<template id="categoryTemplate">
-    <tr>
-        <td>#CategoryName#</td>
-        <td style="width:165px;">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editCategoryModal" data-id="#Id#">Düzenle</button>
-            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteCategoryModal" data-id="#Id#">Sil</button>
-        </td>
-    </tr>
+<template id="dataTableActionsTemplate">
+    <div class="dropdown">
+        <span class="material-symbols-outlined" data-bs-toggle="dropdown">more_horiz</span>
+        <ul class="dropdown-menu">
+            <li><a tag="edit" class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editBookModal" data-id="#id#">Düzenle</a></li>
+            <li><a tag="delete" class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteBookModal" data-id="#id#">Sil</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a tag="activate" class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#activatedCategoryModal" data-id="#id#">Activate</a></li>
+            <li><a tag="deactivate" class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deactivatedCategoryModal" data-id="#id#">Deactivate</a></li>
+        </ul>
+    </div>
 </template>
 
 <partial name="Partials/_New" />
 <partial name="Partials/_Edit"/>
 <partial name="Partials/_Delete"/>
+<partial name="Partials/_Activated"/>
+<partial name="Partials/_Deactivated" />
 
 <script src="~/js/categories.js"></script>

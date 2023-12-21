@@ -7,26 +7,80 @@
     <link rel="stylesheet" href="~/css/main.css" />
     <link rel="stylesheet" href="~/css/datatable.css" />
     <link rel="stylesheet" href="~/css/top-menu.css" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    @*JQUERY*@
+    <script src="~/plugin/jquery/jquery-3.6.4.min.js"></script>
     <script src="~/js/general.js"></script>
 
-    <link rel="stylesheet" href="https://cdn.usebootstrap.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-    <script src="https://cdn.usebootstrap.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    @*SELECT2*@
+    <link href="~/plugin/select2/css/select2.min.css" rel="stylesheet" />
+    <script src="~/plugin/select2/js/select2.min.js"></script>
+    <link rel="stylesheet" href="~/plugin/select2/css/select2-bootstrap-5-theme.min.css" />
 
-    <link href="~/lib/notification/notifications.css" rel="stylesheet" />
-    <script src="~/lib/notification/notifications.js"></script>
-    <script src="~/lib/notification/notifications-custom.js"></script>
+    @*BOOTSTRAP*@
+    <link rel="stylesheet" href="~/plugin/bootstrap/css/bootstrap.min.css" />
+    <script src="~/plugin/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <link href="~/plugin/bootstrap/css/bootstrap-custom.css" rel="stylesheet" />
+
+    @*BOOTSTRAP TABLE*@
+    <link href="~/plugin/bootstrap.table/bootstrap-table.min.css" rel="stylesheet" />
+    <script src="~/plugin/bootstrap.table/tableExport.min.js"></script>
+    <script src="~/plugin/bootstrap.table/bootstrap-table.min.js"></script>
+    <script src="~/plugin/bootstrap.table/bootstrap-table-export.min.js"></script>
+    <script src="~/plugin/bootstrap.table/bootstrap-table-mobile.min.js"></script>
+    <script src="~/plugin/bootstrap.table/bootstrap-table-custom.js"></script>
+    <link href="~/plugin/bootstrap.table/bootstrap-table-custom-theme.css" rel="stylesheet" />
+
+    @*BOOTSTRAP TABLE LOCALIZATION*@
+    <script src="~/plugin/bootstrap.table/localizations/bootstrap-table-en-US.js"></script>
+
+    @*MOMENT*@
+    <script src="~/plugin/moment/moment-with-locales.min.js"></script>
+
+    @*SCROLL*@
+    <link href="~/plugin/scroll/scroll.css" rel="stylesheet" />
+
+    @*Notifications*@
+    <link href="~/plugin/notification/notifications.css" rel="stylesheet" />
+    <script src="~/plugin/notification/notifications.js"></script>
+    <script src="~/plugin/notification/notifications-custom.js"></script>
+
+    @*FONT*@
+    @*GOOGLE ICONS*@
+    <link href="~/plugin/fonts-gstatic/css2.css" rel="stylesheet">
+
+    <script src="~/localization/localization.common.js"></script>
 
     <script>
         var portalApiEndpoint = "http://localhost:5016";
+        var currentLanguageCode = "en-US";
         var token = localStorage.getItem("Token"); //Tarayıcının hafızasından Token'ı okuyoruz
         if (!token) goToUrl('/login'); //boşsa login'e gönderiyoruz
+
+        //AJAX MIDDLEWARES
+        $.ajaxSetup({
+            beforeSend: function (xhr) {
+                var token = localStorage.getItem("Token");
+                xhr.setRequestHeader('Token', token);
+            }
+        });
+
+        $(document).ajaxComplete(function (event, xhr, settings) {
+
+            if (xhr.status == 401) {
+                window.location.href = apiPathBase + "/logout";
+            }
+        });
     </script>
 </head>
 <body>
 
     <div class="topnav">
         <a id="categories" href="/categories">Categories</a>
+        <a id="books" href="/books">Books</a>
+        <a id="authors" href="/authors">Authors</a>
+        <a id="customers" href="/customers">Customers</a>
+        <a id="rezervations" href="/rezervations">Rezervations</a>
         <a id="roles" href="/roles">Roles</a>
         <a id="users" href="/users">Users</a>
         <a id="logout" href="#" onclick="logout();">Çıkış</a>

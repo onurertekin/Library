@@ -2,8 +2,8 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Edit Category</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="staticBackdropLabel">Kategori Düzenle</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -16,7 +16,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" onclick="editCategory();">Kaydet</button>
             </div>
         </div>
@@ -41,7 +41,7 @@
 
     function getCategory() {
         $.ajax({
-            url: portalApiEndpoint + '/geek-yapar-api/categories/' + selectedCategoryId,
+            url:  portalApiEndpoint + '/library-api/categories/' + selectedCategoryId,
             type: 'GET',
             complete: function () {
                 hideModalLoading("editCategoryModal");
@@ -59,7 +59,7 @@
     function editCategory() {
         showModalLoading("editCategoryModal");
         $.ajax({
-            url: portalApiEndpoint + '/geek-yapar-api/categories/' + selectedCategoryId,
+            url: portalApiEndpoint + '/library-api/categories/' + selectedCategoryId,
             type: 'PUT',
             complete: function () {
                 hideModalLoading("editCategoryModal");

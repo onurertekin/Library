@@ -16,13 +16,16 @@ namespace Contract.Response.Users
             public string? email { get; set; }
             public string? userName { get; set; }
             public string? password { get; set; }
+            public int status { get; set; }
+            public bool isDeleted { get; set; }
+            public DateTime CreatedOn { get; set; }
+            public DateTime? UpdatedOn { get; set; }
         }
-
         public SearchUsersResponse()
         {
             users = new List<User>();
         }
-
         public List<User> users { get; set; }
+        public int totalCount { get; set; }
     }
 }

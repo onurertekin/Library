@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Contract.Request.GeekYaparApi.Categories
 {
-    public class SearchCategoriesRequest
+    public class SearchCategoriesRequest : PaginatedRequest
     {
         public string? name { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public int status { get; set; }
     }
 }

@@ -16,14 +16,14 @@ using System.Threading.Tasks;
 namespace Host.Controllers.v1.GeekYaparApi.Categories
 {
     [ApiController]
-    [Route("geek-yapar-api/categories")]
+    [Route("library-api/categories")]
     public class CategoriesController : ControllerBase
     {
         private readonly HttpHelper httpHelper;
-        private readonly string geekYaparApiUrl;
+        private readonly string libraryApiUrl;
         public CategoriesController(HttpHelper httpHelper, IConfiguration configuration)
         {
-            this.geekYaparApiUrl = configuration.GetValue<string>("Services:GeekYaparApi");
+            this.libraryApiUrl = configuration.GetValue<string>("Services:LibraryApi");
             this.httpHelper = httpHelper;
         }
 
@@ -33,7 +33,7 @@ namespace Host.Controllers.v1.GeekYaparApi.Categories
         public async Task<ActionResult<SearchCategoriesResponse>> Search([FromQuery] SearchCategoriesRequest request)
         {
             SearchCategoriesResponse response = new SearchCategoriesResponse();
-            string url = ($"{geekYaparApiUrl}/geek-yapar-api/categories?name={request.name}");
+            string url = ($"{libraryApiUrl}/library-api/categories?name={request.name}&createdOn={request.CreatedOn}&updatedOn={request.UpdatedOn}&status={request.status}&pageNumber={request.pageNumber}&pageSize={request.pageSize}&sortBy={request.sortBy}&sortDirection={request.sortDirection}");
             response = await httpHelper.Get<SearchCategoriesResponse>(url);
             return new JsonResult(response);
         }
@@ -44,7 +44,7 @@ namespace Host.Controllers.v1.GeekYaparApi.Categories
         public async Task<ActionResult<GetSingleCategoriesResponse>> GetSingle(int id)
         {
             GetSingleCategoriesResponse response = new GetSingleCategoriesResponse();
-            string url = ($"{geekYaparApiUrl}/geek-yapar-api/categories/{id}");
+            string url = ($"{libraryApiUrl}/library-api/categories/{id}");
             response = await httpHelper.Get<GetSingleCategoriesResponse>(url);
             return new JsonResult(response);
         }
@@ -54,7 +54,7 @@ namespace Host.Controllers.v1.GeekYaparApi.Categories
         [RequiredHeaderParameters("Token")]
         public async Task Create([FromBody] CreateCategoriesRequest request)
         {
-            await httpHelper.Create($"{geekYaparApiUrl}/geek-yapar-api/categories", request);
+            await httpHelper.Create($"{libraryApiUrl}/library-api/categories", request);
         }
 
         [HttpPut("{id}")]
@@ -62,7 +62,7 @@ namespace Host.Controllers.v1.GeekYaparApi.Categories
         [RequiredHeaderParameters("Token")]
         public async Task Update(int id, [FromBody] UpdateCategoriesRequest request)
         {
-            await httpHelper.Update($"{geekYaparApiUrl}/geek-yapar-api/categories/{id}", request);
+            await httpHelper.Update($"{libraryApiUrl}/library-api/categories/{id}", request);
         }
 
         [HttpDelete("{id}")]
@@ -70,7 +70,23 @@ namespace Host.Controllers.v1.GeekYaparApi.Categories
         [RequiredHeaderParameters("Token")]
         public async Task Delete(int id)
         {
-            await httpHelper.Delete($"{geekYaparApiUrl}/geek-yapar-api/categories/{id}");
+            await httpHelper.Delete($"{libraryApiUrl}/library-api/categories/{id}");
+        }
+
+        [Authorizable("Categories_Activate")]
+        [RequiredHeaderParameters("Token")]
+        [HttpPut("{id}/activate")]
+        public async Task Activate(int id)
+        {
+            await httpHelper.Update($"{libraryApiUrl}/library-api/categories/{id}/activate");
+        }
+
+        [Authorizable("Categories_Deactivate")]
+        [RequiredHeaderParameters("Token")]
+        [HttpPut("{id}/deactivate")]
+        public async Task Deactivate(int id)
+        {
+            await httpHelper.Update($"{libraryApiUrl}/library-api/categories/{id}/deactivate");
         }
 
     }

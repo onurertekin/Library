@@ -13,6 +13,9 @@ namespace Contract.Response.Categories
         {
             public int id { get; set; }
             public string? name { get; set; }
+            public DateTime CreatedOn { get; set; }
+            public DateTime? UpdatedOn { get; set; }
+            public int status { get; set; }
         }
 
         public SearchCategoriesResponse()
@@ -21,5 +24,7 @@ namespace Contract.Response.Categories
         }
 
         public List<Categories> categories { get; set; }
+        public int totalCount { get; set; }
+
     }
 }

@@ -53,8 +53,10 @@ namespace Host.Controllers
             #endregion
 
             SearchUsersResponse response = new SearchUsersResponse();
-            string url = ($"{iamUrl}/iam/users?firstName={request.firstName}&lastName={request.lastName}&userName={request.userName}&email={request.email}");
+            string url = ($"{iamUrl}/iam/users?firstName={request.firstName}&lastName={request.lastName}&userName={request.userName}&email={request.email}&createdOn={request.CreatedOn}&updatedOn={request.UpdatedOn}&status={request.status}&pageNumber={request.pageNumber}&pageSize={request.pageSize}&sortBy={request.sortBy}&sortDirection={request.sortDirection}");
             response = await httpHelper.Get<SearchUsersResponse>(url);
+
+            #region Url Builder2 
 
             ////Url Builder Bu url'i oluşturabilmek için yapıyoruz. Query parametresi istiyorsa UriBuilder yapılır.
 
@@ -82,12 +84,13 @@ namespace Host.Controllers
             //        throw new BusinessException((int)httpResponseMessage.StatusCode, error.ErrorMessage.ToString());
             //    }
             //}
+            #endregion
 
             return new JsonResult(response);
         }
 
-        [Authorizable("Users_GetSingle")]
-        [RequiredHeaderParameters("Token")]
+        //[Authorizable("Users_GetSingle")]
+        //[RequiredHeaderParameters("Token")]
         [HttpGet("{id}")]
         public async Task<ActionResult<GetSingleUsersResponse>> GetSingle(int id)
         {
@@ -136,6 +139,22 @@ namespace Host.Controllers
         public async Task Delete(int id)
         {
             await httpHelper.Delete($"{iamUrl}/iam/users/{id}");
+        }
+
+        [Authorizable("Users_Activate")]
+        [RequiredHeaderParameters("Token")]
+        [HttpPut("{id}/activate")]
+        public async Task Activate(int id)
+        {
+            await httpHelper.Update($"{iamUrl}/iam/users/{id}/activate");
+        }
+
+        [Authorizable("Users_Deactivate")]
+        [RequiredHeaderParameters("Token")]
+        [HttpPut("{id}/deactivate")]
+        public async Task Deactivate(int id)
+        {
+            await httpHelper.Update($"{iamUrl}/iam/users/{id}/deactivate");
         }
     }
 }

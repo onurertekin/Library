@@ -50,7 +50,14 @@ namespace Host
             #region Registrations
 
             services.AddTransient<CategoryOperations>();
-            
+            services.AddTransient<BookOperations>();
+            services.AddTransient<AuthorOperations>();
+            services.AddTransient<CustomerOperations>();
+            services.AddTransient<RezervationOperations>();
+            services.AddTransient<BookAuthorsOperations>();
+            services.AddTransient<BookCategoriesOperations>();
+
+
             #endregion
         }
 

@@ -1,0 +1,264 @@
+﻿.table-bordered {
+    border: solid 0px #dee2e6 !important;
+}
+
+    .table-bordered td, .table-bordered th {
+        border: 0px;
+    }
+
+.bootstrap-table .fixed-table-container .table thead {
+    background-color: #f8f8f8;
+}
+
+.table td, .table th {
+    border-top: 0px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.bootstrap-table .fixed-table-container .table thead th .both {
+    background-image: none;
+}
+
+.bootstrap-table .fixed-table-container .table thead th .th-inner {
+    padding-right: 17px;
+    padding-left: 0px;
+    font-size: 14px;
+}
+
+/*EN ALT SATIRIN BORDER'INI KAPAT*/
+.table tr:last-child td {
+    border-bottom: 0px;
+}
+
+/*PAGING*/
+.bootstrap-table .fixed-table-pagination > .pagination ul.pagination a {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.fixed-table-pagination {
+    padding-top: 10px;
+}
+
+/*SORTING*/
+th.left-aligned .sortable {
+    display: inline-block;
+    background-position: right !important;
+    padding-right: 18px !important;
+}
+
+body[dir=rtl] th.left-aligned .sortable {
+    display: inline-block;
+    background-position: left !important;
+    padding-right: 0px !important;
+    padding-left: 20px !important;
+}
+
+th.right-aligned .sortable {
+    display: inline-block;
+    background-position: left !important;
+    padding-left: 20px !important;
+}
+
+body[dir=rtl] th.right-aligned .sortable {
+    display: inline-block;
+    background-position: right !important;
+    padding-left: 0px !important;
+    padding-right: 20px !important;
+}
+
+.bootstrap-table .fixed-table-container .table thead th .desc {
+    background-position-y: 6px !important;
+}
+
+.bootstrap-table .fixed-table-container .table thead th .asc {
+    background-position-y: 13px !important;
+}
+
+/*TD*/
+.bootstrap-table tbody td:not(.pr-10) {
+    padding-right: 0px !important;
+}
+
+body[dir=rtl] .bootstrap-table tbody td {
+    padding-left: 0px !important;
+}
+
+/*TH*/
+.bootstrap-table thead th.right-aligned .th-inner {
+    padding-right: 0px !important;
+}
+
+body[dir=rtl] .bootstrap-table thead th.right-aligned .th-inner {
+    padding-left: 0px !important;
+    padding-right: 17px !important;
+}
+
+/*TD & TH LAST CHILD*/
+.bootstrap-table thead th:last-child {
+    padding-right: 15px !important;
+}
+
+body[dir=rtl] .bootstrap-table thead th:last-child {
+    padding-right: 0px !important;
+    padding-left: 15px !important;
+}
+
+.bootstrap-table tbody td:last-child {
+    padding-right: 15px !important;
+}
+
+body[dir=rtl] .bootstrap-table tbody td:last-child {
+    padding-right: 0px !important;
+    padding-left: 10px !important;
+}
+
+/*TD FIRST CHILD*/
+.bootstrap-table tbody td:first-child {
+    padding-left: 10px;
+}
+
+body[dir=rtl] .bootstrap-table tbody td:first-child {
+    padding-right: 0px;
+    padding-left: 10px;
+}
+
+/*ALIGNMENT*/
+.bootstrap-table .left-aligned {
+    text-align: left;
+}
+
+body[dir=rtl] .bootstrap-table .left-aligned {
+    text-align: right;
+}
+
+.bootstrap-table .right-aligned {
+    text-align: right;
+}
+
+body[dir=rtl] .bootstrap-table .right-aligned {
+    text-align: left;
+}
+
+/*COMMON COLUMN STYLES*/
+
+.table-row-date {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.table-row-time {
+    font-size: 14px;
+}
+
+.table-row-default {
+    font-weight: 400;
+    padding: 0px 6px;
+    padding-bottom: 2px;
+    font-size: 13px;
+    background-color: #00c89f;
+    color: #fff;
+    border-radius: 3px;
+    top: -1px;
+    display: inline-block;
+}
+
+.table-row-status-active {
+    font-weight: 400;
+    padding: 0px 6px;
+    padding-bottom: 2px;
+    font-size: 13px;
+    background-color: #00c89f;
+    color: #fff;
+    border-radius: 3px;
+    margin-left: 5px;
+    top: -1px;
+    display: inline-block;
+}
+
+.table-row-status-passive {
+    font-weight: 400;
+    padding: 0px 6px;
+    padding-bottom: 2px;
+    font-size: 13px;
+    background-color: gainsboro;
+    color: #444;
+    border-radius: 3px;
+    margin-left: 5px;
+    top: -1px;
+    display: inline-block;
+}
+
+.table-row-status-failure {
+    font-weight: 400;
+    padding: 0px 6px;
+    padding-bottom: 2px;
+    font-size: 13px;
+    background-color: #dc3545;
+    color: #fff;
+    border-radius: 3px;
+    margin-left: 5px;
+    top: -1px;
+    display: inline-block;
+}
+
+.table-row-status-waiting {
+    font-weight: 400;
+    padding: 0px 6px;
+    padding-bottom: 2px;
+    font-size: 13px;
+    background-color: #566e87;
+    color: #fff;
+    border-radius: 3px;
+    margin-left: 5px;
+    top: -1px;
+    display: inline-block;
+}
+
+.table-row-overme {
+    width: 250px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.fixed-table-toolbar {
+    display: none !important;
+}
+
+.fixed-table-body {
+    border-top-left-radius: 3px !important;
+    border-top-right-radius: 3px !important;
+    border-radius: 5px !important;
+    border: solid 1px #dfdfdf !important;
+}
+
+.table-bordered > :not(caption) > * {
+    border-width: 0px !important;
+}
+
+.pagination-info {
+    display: none !important;
+}
+
+.fixed-table-body .material-symbols-outlined {
+    font-size: 34px;
+    margin-top: 7px;
+    cursor: pointer;
+    font-variation-settings: 'FILL' 0, 'wght' 700, 'GRAD' 0, 'opsz' 35;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+.bootstrap-table .fixed-table-container .fixed-table-body {
+    overflow: hidden !important;
+}
+
+.row-action .dropdown {
+    position: absolute !important;
+    margin-top: -23px;
+    margin-left: 20px;
+}
+
+

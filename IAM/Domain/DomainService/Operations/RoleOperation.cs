@@ -1,6 +1,8 @@
 ﻿using DatabaseModel;
 using DatabaseModel.Entities;
+using DatabaseModel.Enumerations;
 using DomainService.Exceptions;
+using DomainService.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace DomainService.Operations
@@ -13,21 +15,21 @@ namespace DomainService.Operations
             this.mainDbContext = mainDbContext;
         }
 
-        public List<Role> Search(string name)
+        public IList<Role> Search(string name, int status, string sortBy, string sortDirection, int pageSize, int pageNumber, out int totalCount)
         {
             var query = mainDbContext.Roles.AsQueryable();
             if (!string.IsNullOrEmpty(name))
                 query = query.Where(x => x.Name == name);
 
-            return query.ToList();
+            return query.GetPagedAndSorted(pageNumber, pageSize, sortDirection, sortBy, out totalCount);
         }
 
         public Role GetSingle(int id)
         {
             var roles = mainDbContext.Roles.AsQueryable().Include(x => x.Claims).Where(x => x.Id == id).SingleOrDefault();
             if (roles == null)
-                throw new BusinessException(400,"Rol Bulunamadı.");
-            
+                throw new BusinessException(400, "Rol Bulunamadı.");
+
             return roles;
         }
 
@@ -35,6 +37,8 @@ namespace DomainService.Operations
         {
             Role role = new Role();
             role.Name = name;
+            role.CreatedOn = DateTime.Now;
+            role.Status = DatabaseModel.Enumerations.RoleStatus.Active;
             mainDbContext.Roles.Add(role);
 
             mainDbContext.SaveChanges();
@@ -47,7 +51,7 @@ namespace DomainService.Operations
                 //Bizde böyle bir code var mı diye kontrol ediyoruz.
                 var _claim = mainDbContext.Claims.Where(x => x.Code == claim).SingleOrDefault();
                 if (_claim == null)
-                    throw new BusinessException(400,"InvalidClaim");
+                    throw new BusinessException(400, "InvalidClaim");
 
                 //Vrsa role'ün claim'lerine ekliyoruz.
                 role.Claims.Add(_claim);
@@ -65,7 +69,7 @@ namespace DomainService.Operations
                 throw new BusinessException(400, "Rol Bulunamadı.");
 
             role.Name = name;
-
+            role.UpdatedOn = DateTime.Now;
             #region Claims
 
             role.Claims.Clear();
@@ -87,11 +91,31 @@ namespace DomainService.Operations
         {
             var role = mainDbContext.Roles.AsQueryable().Include(x => x.Claims).Include(x => x.Users).Where(x => x.Id == id).SingleOrDefault();
             if (role == null)
-                throw new Exception("Role Bulunamadı.");
+                throw new BusinessException(404, "Role Bulunamadı.");
 
             role.Users.Clear();
             role.Claims.Clear();
             mainDbContext.Roles.Remove(role);
+            mainDbContext.SaveChanges();
+        }
+
+        public void Activate(int id)
+        {
+            var role = mainDbContext.Roles.Where(x => x.Id == id).SingleOrDefault();
+            if (role == null)
+                throw new BusinessException(404, "Role Bulunamadı.");
+
+            role.Status = RoleStatus.Active;
+            mainDbContext.SaveChanges();
+        }
+
+        public void Deactivate(int id)
+        {
+            var role = mainDbContext.Roles.Where(x => x.Id == id).SingleOrDefault();
+            if (role == null)
+                throw new BusinessException(404, "Role Bulunamadı.");
+
+            role.Status = RoleStatus.Passive;
             mainDbContext.SaveChanges();
         }
     }

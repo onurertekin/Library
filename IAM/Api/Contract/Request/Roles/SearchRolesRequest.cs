@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Contract.Request.Roles
 {
-    public class SearchRolesRequest
+    public class SearchRolesRequest : PaginatedRequest
     {
         public string? name { get; set; }
+        public int status { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
     }
 }

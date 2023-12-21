@@ -1,0 +1,112 @@
+﻿<div class="modal fade" id="editBookCategoriesModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Kitap Kategorilerini Düzenle</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group" id="categoriesList">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="editBookCategories();">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<template id="bookCategoriesCheckboxTemplate">
+    <div class="form-check">
+        <input id="#LabelFor#" type="checkbox" value="#Id#" class="form-check-input">
+        <label class="form-check-label" for="#LabelFor#">#Name#</label>
+    </div>
+</template>
+
+<script>
+    $editBookCategoriesModal = $("#editBookCategoriesModal");
+
+    var selectedBookId;
+
+    $('#editBookCategoriesModal').on('show.bs.modal', function (event) {
+        //Modal her açıldığında tetiklenir
+        showModalLoading("editBookCategoriesModal");
+        selectedBookId = $(event.relatedTarget).data('id');
+        $("#editBookCategoriesModal #categoriesList").empty();
+        _getCategories();
+
+    });
+
+    function _getCategories() {
+        $.get(portalApiEndpoint + '/library-api/categories', function (response) {
+
+            $(response.categories).each(function (i, category) {
+
+                var template = $("#bookCategoriesCheckboxTemplate").html();
+                template = template.replace("#Id#", category.id);
+                template = template.replace("#LabelFor#", category.id);
+                template = template.replace("#LabelFor#", category.id);
+                template = template.replace("#Name#", category.name);
+                $("#editBookCategoriesModal #categoriesList").append(template);
+            });
+
+            getBookCategory();
+        });
+    }
+
+    function getBookCategory() {
+
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/books/' + selectedBookId + '/categories',
+            type: 'GET',
+            complete: function () {
+                hideModalLoading("editBookCategoriesModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                $(response.bookCategories).each(function (i, category) {
+                    //ilgili rolün checkbox'ını işaretliyoruz.
+                    $("#editBookCategoriesModal #categoriesList input[value='" + category.id + "']").prop("checked", true);
+                });
+            },
+            error: function (err, xhr, status) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+
+    function editBookCategories() {
+
+        var _selectedClaims = [];
+        showModalLoading("editBookCategoriesModal");
+        $("#editBookCategoriesModal").find("input:checked").each(function (i, categoryCheckbox) {
+            _selectedClaims.push($(categoryCheckbox).val());
+        });
+
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/books/' + selectedBookId + '/categories',
+            type: 'PUT',
+            complete: function () {
+                hideModalLoading("editBookCategoriesModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                "categories": _selectedClaims
+            }),
+            success: function () {
+                $('#editBookCategoriesModal').modal('hide');
+                notify("", "Kategoriler başarıyla güncellendi.", "success");
+            },
+            error: function (err, status, xhr) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+</script>

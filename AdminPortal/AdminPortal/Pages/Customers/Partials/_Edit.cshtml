@@ -1,0 +1,101 @@
+﻿<div class="modal fade" id="editCustomerModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Müşteri Düzenle</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="customerName">Müşteri Adı</label>
+                    <input name="customerName" type="text" class="form-control">
+
+                    <label for="customerSurname">Müşteri Soyadı</label>
+                    <input name="customerSurname" type="text" class="form-control">
+
+                    <label for="customerIdentity">Müşteri Kimlik Numarası</label>
+                    <input name="customerIdentity" type="text" class="form-control">
+
+                    <label for="customerPhoneNumber">Müşteri Telefon Numarası</label>
+                    <input name="customerPhoneNumber" type="text" class="form-control">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="editCustomer();">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $editCustomerModal = $("#editCustomerModal");
+    var selectedCustomerId;
+
+    $editCustomerModal.on('show.bs.modal', function (event) {
+        //Modal her açıldığında tetiklenir
+        showModalLoading("editCustomerModal");
+        $newCustomerModal.find("input[name='customerName']").val("");
+        $newCustomerModal.find("input[name='customerSurname']").val("");
+        $newCustomerModal.find("input[name='customerIdentity']").val("");
+        $newCustomerModal.find("input[name='customerPhoneNumber']").val("");
+        $newCustomerModal.find("input[name='customerName']").trigger('focus');
+
+        selectedCustomerId = $(event.relatedTarget).data('id'); //Tıklanan satırın id'sini oku
+
+        getCustomer();
+    });
+
+    function getCustomer() {
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/customers/' + selectedCustomerId,
+            type: 'GET',
+            complete: function () {
+                hideModalLoading("editCustomerModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                $editCustomerModal.find("input[name='customerName']").val(response.name);
+                $editCustomerModal.find("input[name='customerSurname']").val(response.surname);
+                $editCustomerModal.find("input[name='customerIdentity']").val(response.identity);
+                $editCustomerModal.find("input[name='customerPhoneNumber']").val(response.phoneNumber);
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+
+    function editCustomer() {
+        showModalLoading("editCustomerModal");
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/customers/' + selectedCustomerId,
+            type: 'PUT',
+            complete: function () {
+                hideModalLoading("editCustomerModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                name: $editCustomerModal.find("input[name='customerName']").val(),
+                surname: $editCustomerModal.find("input[name='customerSurname']").val(),
+                identity: $editCustomerModal.find("input[name='customerIdentity']").val(),
+                phoneNumber: $editCustomerModal.find("input[name='customerPhoneNumber']").val()
+            }),
+            success: function (result) {
+                $('#editCustomerModal').modal('hide');// modal'ı kapat
+                notify("", "Müşteri başarıyla güncellendi.", "success");
+                getCustomers();
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+
+</script>

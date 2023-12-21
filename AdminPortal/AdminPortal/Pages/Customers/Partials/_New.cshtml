@@ -1,0 +1,76 @@
+﻿<div class="modal fade" id="newCustomerModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Yeni Müşteri</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="customerName">Müşteri Adı</label>
+                    <input name="customerName" type="text" class="form-control">
+
+                    <label for="customerSurname">Müşteri Soyadı</label>
+                    <input name="customerSurname" type="text" class="form-control">
+
+                    <label for="customerIdentity">Müşteri Kimlik Numarası</label>
+                    <input name="customerIdentity" type="text" class="form-control">
+
+                    <label for="customerPhoneNumber">Müşteri Telefon Numarası</label>
+                    <input name="customerPhoneNumber" type="text" class="form-control">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="createNewCustomer();">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $newCustomerModal = $("#newCustomerModal");
+
+    $('#newCustomerModal').on('shown.bs.modal', function () {
+        //Modal her açıldığında tetiklenir
+        $newCustomerModal.find("input[name='customerName']").val("");
+        $newCustomerModal.find("input[name='customerSurname']").val("");
+        $newCustomerModal.find("input[name='customerIdentity']").val("");
+        $newCustomerModal.find("input[name='customerPhoneNumber']").val("");
+        $newCustomerModal.find("input[name='customerName']").trigger('focus');
+    });
+
+    function createNewCustomer() {
+        showModalLoading("newCategoryModal");
+        //create api'si çağırılacak
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/customers',
+            type: 'POST',
+            complete: function () {
+                hideModalLoading("newCustomerModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                name: $newCustomerModal.find("input[name='customerName']").val(),
+                surname: $newCustomerModal.find("input[name='customerSurname']").val(),
+                identity: $newCustomerModal.find("input[name='customerIdentity']").val(),
+                phoneNumber: $newCustomerModal.find("input[name='customerPhoneNumber']").val()
+            }),
+            success: function () {
+                debugger;
+                $('#newCustomerModal').modal('hide');// modal'ı kapat
+                notify("", "Müşteri başarıyla oluşturuldu.", "success");
+                getCustomers();
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+</script>

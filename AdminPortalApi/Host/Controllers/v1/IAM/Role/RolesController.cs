@@ -36,7 +36,7 @@ namespace Host.Controllers.v1.IAM.Role
         public async Task<ActionResult<SearchRolesResponse>> Search([FromQuery] SearchRolesRequest request)
         {
             SearchRolesResponse response = new SearchRolesResponse();
-            string url = ($"{iamUrl}/iam/roles?name={request.name}");
+            string url = ($"{iamUrl}/iam/roles?name={request.name}&createdOn={request.CreatedOn}&updatedOn={request.UpdatedOn}&status={request.status}&pageNumber={request.pageNumber}&pageSize={request.pageSize}&sortBy={request.sortBy}&sortDirection={request.sortDirection}");
             response = await httpHelper.Get<SearchRolesResponse>(url);
 
             return new JsonResult(response);
@@ -74,6 +74,22 @@ namespace Host.Controllers.v1.IAM.Role
         public async void Delete(int id)
         {
             await httpHelper.Delete($"{iamUrl}/iam/roles/{id}");
+        }
+
+        [Authorizable("Roles_Activated")]
+        [RequiredHeaderParameters("Token")]
+        [HttpPut("{id}/activate")]
+        public async Task Activate(int id)
+        {
+            await httpHelper.Update($"{iamUrl}/iam/roles/{id}/activate");
+        }
+
+        [Authorizable("Roles_Deactivate")]
+        [RequiredHeaderParameters("Token")]
+        [HttpPut("{id}/deactivate")]
+        public async Task DeActivate(int id)
+        {
+            await httpHelper.Update($"{iamUrl}/iam/roles/{id}/deactivate");
         }
     }
 }

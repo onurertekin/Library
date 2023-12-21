@@ -1,0 +1,114 @@
+﻿<div class="modal fade" id="editRezervationModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Rezervasyon Düzenle</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="rezervationStartDate">Rezervasyon Başlangıç Tarihi</label>
+                    <input name="rezervationStartDate" type="date" class="form-control">
+
+                    <label for="rezervationEndDate">Rezervasyon Bitiş Tarihi</label>
+                    <input name="rezervationEndDate" type="date" class="form-control">
+
+                    <div class="form-group">
+                        <label for="customers">Müşteriler</label>
+                        <select name="customers" class="form-control">
+                            @*<option value="1">Onur</option>*@
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="books">Kitaplar</label>
+                        <select name="books" class="form-control">
+                            @*<option value="1">Nutuk</option>*@
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="editRezervation();">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $editRezervationModal = $("#editRezervationModal");
+    var selectedRezervationId;
+
+    fillCustomers('#editRezervationModal select[name=customers]');
+    fillBooks('#editRezervationModal select[name=books]');
+
+    $editRezervationModal.on('show.bs.modal', function (event) {
+        //Modal her açıldığında tetiklenir
+        showModalLoading("editRezervationModal");
+        $editRezervationModal.find("input[name='rezervationStartDate']").val("");
+        $editRezervationModal.find("input[name='rezervationEndDate']").val("");
+        $editRezervationModal.find("select[name='customers']").val("");
+        $editRezervationModal.find("select[name='books']").val("");
+        $editRezervationModal.find("input[name='rezervationStartDate']").trigger('focus');
+
+        selectedRezervationId = $(event.relatedTarget).data('id'); //Tıklanan satırın id'sini oku
+
+        getRezervation();
+    });
+
+    function getRezervation() {
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/rezervations/' + selectedRezervationId,
+            type: 'GET',
+            complete: function () {
+                hideModalLoading("editRezervationModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                debugger;
+                $editRezervationModal.find("input[name='rezervationStartDate']").val(response.rezervationStartDate);
+                $editRezervationModal.find("input[name='rezervationEndDate']").val(response.rezervationEndDate);
+                $editRezervationModal.find("select[name='customers']").val(response.customerId);
+                $editRezervationModal.find("select[name='books']").val(response.bookId);
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+
+    function editRezervation() {
+        showModalLoading("editRezervationModal");
+        $.ajax({
+            url: portalApiEndpoint + '/library-api/rezervations/' + selectedRezervationId,
+            type: 'PUT',
+            complete: function () {
+                hideModalLoading("editRezervationModal");
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                rezervationStartDate: $editRezervationModal.find("input[name='rezervationStartDate']").val(),
+                rezervationEndDate: $editRezervationModal.find("input[name='rezervationEndDate']").val(),
+                customerId: $editRezervationModal.find("select[name='customers']").val(),
+                bookId: $editRezervationModal.find("select[name='books']").val()
+            }),
+            success: function (result) {
+                $('#editRezervationModal').modal('hide');// modal'ı kapat
+                notify("", "Rezervasyon başarıyla güncellendi.", "success");
+                getRezervations();
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.responseJSON.ErrorMessage;
+                notify("", errorMessage, "error");
+            }
+        });
+    }
+
+</script>
